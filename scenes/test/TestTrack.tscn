@@ -1,0 +1,112 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/car/Car.tscn" id="1"]
+
+[sub_resource type="BoxShape3D" id="ground_shape"]
+size = Vector3(60, 0.4, 60)
+
+[sub_resource type="BoxMesh" id="ground_mesh"]
+size = Vector3(60, 0.4, 60)
+
+[sub_resource type="StandardMaterial3D" id="ground_mat"]
+albedo_color = Color(0.25, 0.45, 0.2, 1)
+shading_mode = 2
+
+[sub_resource type="BoxShape3D" id="wall_shape"]
+size = Vector3(60, 2.0, 0.5)
+
+[sub_resource type="BoxMesh" id="wall_mesh"]
+size = Vector3(60, 2.0, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="wall_mat"]
+albedo_color = Color(0.6, 0.5, 0.3, 1)
+shading_mode = 2
+
+[sub_resource type="BoxShape3D" id="ramp_shape"]
+size = Vector3(8, 0.2, 12)
+
+[sub_resource type="BoxMesh" id="ramp_mesh"]
+size = Vector3(8, 0.2, 12)
+
+[sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
+sky_top_color = Color(0.4, 0.65, 0.9, 1)
+sky_horizon_color = Color(0.7, 0.85, 0.95, 1)
+ground_bottom_color = Color(0.25, 0.45, 0.2, 1)
+ground_horizon_color = Color(0.4, 0.5, 0.3, 1)
+
+[sub_resource type="Sky" id="sky"]
+sky_material = SubResource("sky_mat")
+
+[sub_resource type="Environment" id="env"]
+background_mode = 2
+sky = SubResource("sky")
+ambient_light_source = 3
+ambient_light_color = Color(0.7, 0.7, 0.75, 1)
+ambient_light_energy = 0.6
+
+[node name="TestTrack" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("env")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.354, 0.354, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 8, 0)
+light_color = Color(1.0, 0.95, 0.85, 1)
+light_energy = 1.2
+shadow_enabled = true
+
+[node name="Ground" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("ground_shape")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+mesh = SubResource("ground_mesh")
+surface_material_override/0 = SubResource("ground_mat")
+
+[node name="WallNorth" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, -30)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallNorth"]
+shape = SubResource("wall_shape")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WallNorth"]
+mesh = SubResource("wall_mesh")
+surface_material_override/0 = SubResource("wall_mat")
+
+[node name="WallSouth" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 30)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallSouth"]
+shape = SubResource("wall_shape")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WallSouth"]
+mesh = SubResource("wall_mesh")
+surface_material_override/0 = SubResource("wall_mat")
+
+[node name="WallEast" type="StaticBody3D" parent="."]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 30, 1.0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallEast"]
+shape = SubResource("wall_shape")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WallEast"]
+mesh = SubResource("wall_mesh")
+surface_material_override/0 = SubResource("wall_mat")
+
+[node name="WallWest" type="StaticBody3D" parent="."]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -30, 1.0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallWest"]
+shape = SubResource("wall_shape")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WallWest"]
+mesh = SubResource("wall_mesh")
+surface_material_override/0 = SubResource("wall_mat")
+
+[node name="Car_P1" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.5, 0)
+
+[node name="Car" parent="Car_P1" instance=ExtResource("1")]
+player_index = 0

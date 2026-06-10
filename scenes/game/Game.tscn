@@ -1,0 +1,158 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/game/game.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/Countdown.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/PauseMenu.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/ui/ResultsScreen.tscn" id="5"]
+
+[sub_resource type="StyleBoxFlat" id="hud_bg"]
+bg_color = Color(0, 0, 0, 0.5)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 10.0
+content_margin_right = 10.0
+content_margin_top = 6.0
+content_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxFlat" id="hud_bg2"]
+bg_color = Color(0, 0, 0, 0.5)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 10.0
+content_margin_right = 10.0
+content_margin_top = 6.0
+content_margin_bottom = 6.0
+
+[node name="Game" type="Node"]
+script = ExtResource("1")
+
+; ── PANTALLA ────────────────────────────────────────────────────────────────
+
+[node name="Screen" type="HBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/separation = 2
+
+; Panel izquierdo (P1 / modo 1 jugador ocupa todo)
+
+[node name="Left" type="Control" parent="Screen"]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VPContainer" type="SubViewportContainer" parent="Screen/Left"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+stretch = true
+
+[node name="VP1" type="SubViewport" parent="Screen/Left/VPContainer"]
+handle_input_locally = false
+render_target_update_mode = 4
+
+; Panel derecho (P2 — se oculta en 1 jugador)
+
+[node name="Right" type="Control" parent="Screen"]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VPContainer" type="SubViewportContainer" parent="Screen/Right"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+stretch = true
+
+[node name="VP2" type="SubViewport" parent="Screen/Right/VPContainer"]
+handle_input_locally = false
+render_target_update_mode = 4
+
+; ── HUD P1 ──────────────────────────────────────────────────────────────────
+
+[node name="HUD_P1" type="CanvasLayer" parent="."]
+layer = 10
+script = ExtResource("2")
+
+[node name="Panel" type="PanelContainer" parent="HUD_P1"]
+anchors_preset = 1
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 150.0
+offset_bottom = 120.0
+theme_override_styles/panel = SubResource("hud_bg")
+
+[node name="VBox" type="VBoxContainer" parent="HUD_P1/Panel"]
+theme_override_constants/separation = 4
+
+[node name="Position" type="Label" parent="HUD_P1/Panel/VBox"]
+text = "P1"
+theme_override_font_sizes/font_size = 32
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="Speed" type="Label" parent="HUD_P1/Panel/VBox"]
+text = "0 km/h"
+theme_override_font_sizes/font_size = 18
+
+[node name="Lap" type="Label" parent="HUD_P1/Panel/VBox"]
+text = "Lap 1/3"
+theme_override_font_sizes/font_size = 16
+
+[node name="Time" type="Label" parent="HUD_P1/Panel/VBox"]
+text = "0:00.00"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.6, 1, 0.6, 1)
+
+; ── HUD P2 ──────────────────────────────────────────────────────────────────
+
+[node name="HUD_P2" type="CanvasLayer" parent="."]
+layer = 10
+script = ExtResource("2")
+
+[node name="Panel" type="PanelContainer" parent="HUD_P2"]
+anchors_preset = 2
+anchor_left = 1.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+offset_left = -150.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = 120.0
+theme_override_styles/panel = SubResource("hud_bg2")
+
+[node name="VBox" type="VBoxContainer" parent="HUD_P2/Panel"]
+theme_override_constants/separation = 4
+
+[node name="Position" type="Label" parent="HUD_P2/Panel/VBox"]
+text = "P1"
+theme_override_font_sizes/font_size = 32
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+
+[node name="Speed" type="Label" parent="HUD_P2/Panel/VBox"]
+text = "0 km/h"
+theme_override_font_sizes/font_size = 18
+
+[node name="Lap" type="Label" parent="HUD_P2/Panel/VBox"]
+text = "Lap 1/3"
+theme_override_font_sizes/font_size = 16
+
+[node name="Time" type="Label" parent="HUD_P2/Panel/VBox"]
+text = "0:00.00"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.6, 1, 0.6, 1)
+
+; ── OVERLAYS ────────────────────────────────────────────────────────────────
+
+[node name="Countdown" parent="." instance=ExtResource("3")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("4")]
+
+[node name="ResultsScreen" parent="." instance=ExtResource("5")]

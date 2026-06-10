@@ -1,0 +1,39 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/split_screen.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="2"]
+
+[node name="SplitScreen" type="Node"]
+script = ExtResource("1")
+
+[node name="HSplitContainer" type="HBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/separation = 2
+
+[node name="ViewportContainer_P1" type="SubViewportContainer" parent="HSplitContainer"]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport_P1" type="SubViewport" parent="HSplitContainer/ViewportContainer_P1"]
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="ViewportContainer_P2" type="SubViewportContainer" parent="HSplitContainer"]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport_P2" type="SubViewport" parent="HSplitContainer/ViewportContainer_P2"]
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="HUD_P1" parent="." instance=ExtResource("2")]
+layer = 2
+player_index = 0
+
+[node name="HUD_P2" parent="." instance=ExtResource("2")]
+layer = 2
+player_index = 1

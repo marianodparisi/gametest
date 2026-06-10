@@ -1,0 +1,88 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/race/race_manager.gd" id="race_mgr"]
+[ext_resource type="Script" path="res://scripts/race/track_builder.gd" id="track_builder"]
+[ext_resource type="Script" path="res://scripts/stages/circuit01_setup.gd" id="setup"]
+
+[sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
+sky_top_color = Color(0.35, 0.58, 0.82, 1)
+sky_horizon_color = Color(0.62, 0.78, 0.9, 1)
+ground_bottom_color = Color(0.28, 0.48, 0.22, 1)
+ground_horizon_color = Color(0.36, 0.5, 0.28, 1)
+
+[sub_resource type="Sky" id="sky"]
+sky_material = SubResource("sky_mat")
+
+[sub_resource type="Environment" id="env"]
+background_mode = 2
+sky = SubResource("sky")
+ambient_light_source = 3
+ambient_light_color = Color(0.68, 0.7, 0.75, 1)
+ambient_light_energy = 0.5
+fog_enabled = true
+fog_density = 0.0015
+fog_sky_affect = 0.25
+
+[node name="Circuit01" type="Node3D"]
+script = ExtResource("setup")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.354, 0.354, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 15, 0)
+light_color = Color(1.0, 0.93, 0.82, 1)
+light_energy = 1.4
+shadow_enabled = true
+shadow_blur = 2.0
+
+[node name="TrackBuilder" type="Node3D" parent="."]
+script = ExtResource("track_builder")
+road_width = 10.0
+road_color = Color(0.22, 0.22, 0.24, 1)
+
+[node name="Waypoints" type="Node3D" parent="."]
+
+[node name="WP00" type="Node3D" parent="Waypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -55)
+
+[node name="WP01" type="Node3D" parent="Waypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -50)
+
+[node name="WP02" type="Node3D" parent="Waypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42, 0, -35)
+
+[node name="WP03" type="Node3D" parent="Waypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52, 0, -10)
+
+[node name="WP04" type="Node3D" parent="Waypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 0, 20)
+
+[node name="WP05" type="Node3D" parent="Waypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 42)
+
+[node name="WP06" type="Node3D" parent="Waypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 55)
+
+[node name="WP07" type="Node3D" parent="Waypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, 42)
+
+[node name="WP08" type="Node3D" parent="Waypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52, 0, 18)
+
+[node name="WP09" type="Node3D" parent="Waypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48, 0, -12)
+
+[node name="WP10" type="Node3D" parent="Waypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, -42)
+
+[node name="WP11" type="Node3D" parent="Waypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, -52)
+
+[node name="GridStart" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -42)
+
+[node name="RaceManager" type="Node" parent="."]
+script = ExtResource("race_mgr")
+total_laps = 3
+is_circuit = true

@@ -1,0 +1,197 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1"]
+
+[sub_resource type="StyleBoxFlat" id="settings_style"]
+bg_color = Color(0.1, 0.12, 0.16, 0.97)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+content_margin_left = 24.0
+content_margin_right = 24.0
+content_margin_top = 20.0
+content_margin_bottom = 20.0
+
+[node name="MainMenu" type="Control"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.08, 0.1, 0.13, 1)
+
+[node name="VBox" type="VBoxContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -260.0
+offset_right = 180.0
+offset_bottom = 260.0
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="VBox"]
+text = "RALLY"
+theme_override_font_sizes/font_size = 72
+theme_override_colors/font_color = Color(0.95, 0.85, 0.2, 1)
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="VBox"]
+text = "low poly racing"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.5, 0.5, 0.55, 1)
+horizontal_alignment = 1
+
+[node name="Spacer1" type="Control" parent="VBox"]
+custom_minimum_size = Vector2(0, 8)
+
+[node name="StageRow" type="HBoxContainer" parent="VBox"]
+alignment = 1
+theme_override_constants/separation = 8
+
+[node name="BtnPrev" type="Button" parent="VBox/StageRow"]
+text = "◀"
+custom_minimum_size = Vector2(36, 36)
+
+[node name="StageName" type="Label" parent="VBox/StageRow"]
+text = "Circuit — Lakeside"
+custom_minimum_size = Vector2(250, 0)
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+
+[node name="BtnNext" type="Button" parent="VBox/StageRow"]
+text = "▶"
+custom_minimum_size = Vector2(36, 36)
+
+[node name="StageType" type="Label" parent="VBox"]
+text = "◆ Circuit — 3 laps"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.55, 0.8, 0.55, 1)
+horizontal_alignment = 1
+
+[node name="BestTime" type="Label" parent="VBox"]
+text = "Best: --:--"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.95, 0.85, 0.2, 1)
+horizontal_alignment = 1
+
+[node name="DiffRow" type="HBoxContainer" parent="VBox"]
+alignment = 1
+theme_override_constants/separation = 8
+
+[node name="BtnDiffPrev" type="Button" parent="VBox/DiffRow"]
+text = "◀"
+custom_minimum_size = Vector2(30, 30)
+
+[node name="DiffLabel" type="Label" parent="VBox/DiffRow"]
+text = "AI:"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.6, 0.6, 0.65, 1)
+
+[node name="DiffName" type="Label" parent="VBox/DiffRow"]
+text = "Normal"
+custom_minimum_size = Vector2(80, 0)
+theme_override_font_sizes/font_size = 15
+horizontal_alignment = 1
+
+[node name="BtnDiffNext" type="Button" parent="VBox/DiffRow"]
+text = "▶"
+custom_minimum_size = Vector2(30, 30)
+
+[node name="Spacer2" type="Control" parent="VBox"]
+custom_minimum_size = Vector2(0, 4)
+
+[node name="Btn1P" type="Button" parent="VBox"]
+text = "1 Player"
+custom_minimum_size = Vector2(340, 48)
+theme_override_font_sizes/font_size = 20
+
+[node name="Btn2P" type="Button" parent="VBox"]
+text = "2 Players — Split Screen"
+custom_minimum_size = Vector2(340, 48)
+theme_override_font_sizes/font_size = 20
+
+[node name="BtnTimeTrial" type="Button" parent="VBox"]
+text = "Time Trial"
+custom_minimum_size = Vector2(340, 48)
+theme_override_font_sizes/font_size = 20
+
+[node name="BtnSettings" type="Button" parent="VBox"]
+text = "Settings"
+custom_minimum_size = Vector2(340, 40)
+theme_override_font_sizes/font_size = 16
+
+[node name="BtnQuit" type="Button" parent="VBox"]
+text = "Quit"
+custom_minimum_size = Vector2(340, 40)
+theme_override_font_sizes/font_size = 16
+
+; ── SETTINGS PANEL ──────────────────────────────────────────────────────────
+
+[node name="SettingsPanel" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -120.0
+offset_right = 180.0
+offset_bottom = 120.0
+theme_override_styles/panel = SubResource("settings_style")
+
+[node name="VBox" type="VBoxContainer" parent="SettingsPanel"]
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="SettingsPanel/VBox"]
+text = "SETTINGS"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.95, 0.85, 0.2, 1)
+horizontal_alignment = 1
+
+[node name="MasterRow" type="HBoxContainer" parent="SettingsPanel/VBox"]
+theme_override_constants/separation = 12
+
+[node name="Label" type="Label" parent="SettingsPanel/VBox/MasterRow"]
+text = "Master"
+custom_minimum_size = Vector2(70, 0)
+theme_override_font_sizes/font_size = 15
+
+[node name="Slider" type="HSlider" parent="SettingsPanel/VBox/MasterRow"]
+custom_minimum_size = Vector2(200, 24)
+max_value = 1.0
+step = 0.05
+value = 1.0
+size_flags_horizontal = 3
+
+[node name="MusicRow" type="HBoxContainer" parent="SettingsPanel/VBox"]
+theme_override_constants/separation = 12
+
+[node name="Label" type="Label" parent="SettingsPanel/VBox/MusicRow"]
+text = "Music"
+custom_minimum_size = Vector2(70, 0)
+theme_override_font_sizes/font_size = 15
+
+[node name="Slider" type="HSlider" parent="SettingsPanel/VBox/MusicRow"]
+custom_minimum_size = Vector2(200, 24)
+max_value = 1.0
+step = 0.05
+value = 0.7
+size_flags_horizontal = 3
+
+[node name="MusicEnabled" type="CheckButton" parent="SettingsPanel/VBox"]
+text = "Music enabled"
+button_pressed = true
+theme_override_font_sizes/font_size = 15
+
+[node name="BtnClose" type="Button" parent="SettingsPanel/VBox"]
+text = "Close"
+custom_minimum_size = Vector2(0, 38)
+theme_override_font_sizes/font_size = 16
