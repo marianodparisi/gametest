@@ -35,8 +35,11 @@ public class RallyGame : MonoBehaviour
     void Awake()
     {
         Application.targetFrameRate = 60;
-        // Material base compatible URP/Built-in
-        var shader = Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard");
+        // Elegir shader según el pipeline ACTIVO (URP/Lit sin URP activo = magenta)
+        bool urpActive = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline != null;
+        var shader = urpActive
+            ? Shader.Find("Universal Render Pipeline/Lit")
+            : Shader.Find("Standard");
         _baseMat = new Material(shader);
     }
 
