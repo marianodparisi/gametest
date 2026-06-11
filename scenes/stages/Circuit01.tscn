@@ -46,7 +46,7 @@ shadow_blur = 2.0
 [node name="TrackBuilder" type="Node3D" parent="."]
 script = ExtResource("track_builder")
 road_width = 10.0
-road_color = Color(0.22, 0.22, 0.24, 1)
+road_color = Color(0.36, 0.35, 0.37, 1)
 
 [node name="Waypoints" type="Node3D" parent="."]
 

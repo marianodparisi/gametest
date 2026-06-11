@@ -55,8 +55,9 @@ func _add_props() -> void:
 		Vector3(80, 0, 30), Vector3(-80, 0, -30), Vector3(30, 0, 80),
 		Vector3(-30, 0, -80), Vector3(55, 0, -70), Vector3(-55, 0, 70),
 	]
-	for pos in tree_positions:
-		_spawn_tree(pos)
+	for i in tree_positions.size():
+		var kind = "res://assets/props/tree.glb" if i % 2 == 0 else "res://assets/props/pine.glb"
+		_spawn_prop(kind, tree_positions[i])
 
 	# Montañas de fondo (decoración)
 	_spawn_mountain(Vector3(120, 0, 0), Vector3(40, 30, 30))
@@ -65,57 +66,12 @@ func _add_props() -> void:
 	_spawn_mountain(Vector3(-50, 0, -130), Vector3(45, 28, 35))
 
 
-func _spawn_tree(pos: Vector3) -> void:
-	var trunk_mat = StandardMaterial3D.new()
-	trunk_mat.albedo_color = Color(0.35, 0.22, 0.12, 1)
-
-	var leaf_mat = StandardMaterial3D.new()
-	# Variación de color para naturalidad
-	leaf_mat.albedo_color = Color(
-		randf_range(0.15, 0.25),
-		randf_range(0.45, 0.65),
-		randf_range(0.1, 0.2),
-		1
-	)
-
-	var root = Node3D.new()
-	root.position = pos + Vector3(0, 0.0, 0)
-	root.rotation.y = randf_range(0, TAU)
-	var scale_v = randf_range(0.7, 1.4)
-	root.scale = Vector3(scale_v, scale_v, scale_v)
-
-	# Tronco
-	var trunk = MeshInstance3D.new()
-	var t_mesh = CylinderMesh.new()
-	t_mesh.top_radius = 0.12
-	t_mesh.bottom_radius = 0.18
-	t_mesh.height = 1.8
-	trunk.mesh = t_mesh
-	trunk.position.y = 0.9
-	trunk.set_surface_override_material(0, trunk_mat)
-
-	# Copa (pirámide = prism low-poly)
-	var leaves = MeshInstance3D.new()
-	var l_mesh = CylinderMesh.new()
-	l_mesh.top_radius = 0.0
-	l_mesh.bottom_radius = 1.4
-	l_mesh.height = 3.0
-	l_mesh.radial_segments = 5  # Pentagonal = low-poly
-	leaves.mesh = l_mesh
-	leaves.position.y = 3.2
-	leaves.set_surface_override_material(0, leaf_mat)
-
-	root.add_child(trunk)
-	root.add_child(leaves)
-	add_child(root)
-
-
 func _spawn_mountain(pos: Vector3, size: Vector3) -> void:
 	var mat = StandardMaterial3D.new()
 	mat.albedo_color = Color(
-		randf_range(0.35, 0.5),
-		randf_range(0.38, 0.52),
-		randf_range(0.38, 0.52),
+		randf_range(0.48, 0.58),
+		randf_range(0.44, 0.52),
+		randf_range(0.4, 0.48),
 		1
 	)
 
@@ -130,3 +86,16 @@ func _spawn_mountain(pos: Vector3, size: Vector3) -> void:
 	mi.position = pos + Vector3(0, size.y * 0.5, 0)
 	mi.set_surface_override_material(0, mat)
 	add_child(mi)
+
+const PROP_SCALE_VAR = 0.35
+
+func _spawn_prop(path: String, pos: Vector3, base_scale: float = 1.0) -> void:
+	if not ResourceLoader.exists(path):
+		return
+	var inst = load(path).instantiate()
+	inst.position = pos
+	inst.rotation.y = randf_range(0, TAU)
+	var s = base_scale * randf_range(1.0 - PROP_SCALE_VAR, 1.0 + PROP_SCALE_VAR)
+	inst.scale = Vector3(s, s, s)
+	add_child(inst)
+

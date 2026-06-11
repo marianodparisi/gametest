@@ -12,16 +12,27 @@ extends RayCast3D
 # Masa que soporta esta rueda (mass/4) — la asigna car_controller en _ready
 var mass_share: float = 300.0
 
+const WHEEL_MODEL = "res://assets/props/wheel.glb"
+
 var _prev_compression: float = 0.0
 var is_grounded: bool = false
-var _mesh: MeshInstance3D = null
+var _mesh: Node3D = null
 
 
 func _ready() -> void:
-	for child in get_children():
-		if child is MeshInstance3D:
-			_mesh = child
-			break
+	# Usar el modelo Blender si existe; si no, el cilindro de la escena
+	if ResourceLoader.exists(WHEEL_MODEL):
+		for child in get_children():
+			if child is MeshInstance3D:
+				child.queue_free()
+		var inst = load(WHEEL_MODEL).instantiate()
+		add_child(inst)
+		_mesh = inst
+	else:
+		for child in get_children():
+			if child is MeshInstance3D:
+				_mesh = child
+				break
 
 
 func _physics_process(_delta: float) -> void:

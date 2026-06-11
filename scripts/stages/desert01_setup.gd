@@ -50,7 +50,7 @@ func _add_props() -> void:
 		Vector3(-45, 0, 75), Vector3(0, 0, 90), Vector3(5, 0, -32),
 	]
 	for pos in cactus_spots:
-		_spawn_cactus(pos)
+		_spawn_prop("res://assets/props/cactus.glb", pos)
 
 	# Dunas de fondo
 	_spawn_dune(Vector3(130, 0, 0), 60.0, 18.0)
@@ -60,47 +60,7 @@ func _add_props() -> void:
 
 	# Rocas desérticas
 	for pos in [Vector3(60, 0, -55), Vector3(-55, 0, 60), Vector3(35, 0, 70), Vector3(-30, 0, -65)]:
-		_spawn_rock(pos)
-
-
-func _spawn_cactus(pos: Vector3) -> void:
-	var mat = StandardMaterial3D.new()
-	mat.albedo_color = Color(
-		randf_range(0.2, 0.3), randf_range(0.45, 0.6), randf_range(0.25, 0.35), 1
-	)
-
-	var root = Node3D.new()
-	root.position = pos
-	root.rotation.y = randf_range(0, TAU)
-	var s = randf_range(0.8, 1.5)
-	root.scale = Vector3(s, s, s)
-
-	# Tronco principal
-	var trunk = MeshInstance3D.new()
-	var tm = CylinderMesh.new()
-	tm.top_radius = 0.25
-	tm.bottom_radius = 0.3
-	tm.height = 2.8
-	tm.radial_segments = 6
-	trunk.mesh = tm
-	trunk.position.y = 1.4
-	trunk.set_surface_override_material(0, mat)
-	root.add_child(trunk)
-
-	# Dos brazos
-	for side in [-1, 1]:
-		var arm = MeshInstance3D.new()
-		var am = CylinderMesh.new()
-		am.top_radius = 0.16
-		am.bottom_radius = 0.18
-		am.height = 1.1
-		am.radial_segments = 6
-		arm.mesh = am
-		arm.position = Vector3(side * 0.45, 1.7 + randf_range(0, 0.4), 0)
-		arm.set_surface_override_material(0, mat)
-		root.add_child(arm)
-
-	add_child(root)
+		_spawn_prop("res://assets/props/rock.glb", pos, 1.2)
 
 
 func _spawn_dune(pos: Vector3, radius: float, height: float) -> void:
@@ -122,19 +82,17 @@ func _spawn_dune(pos: Vector3, radius: float, height: float) -> void:
 	add_child(mi)
 
 
-func _spawn_rock(pos: Vector3) -> void:
-	var mat = StandardMaterial3D.new()
-	mat.albedo_color = Color(0.6, 0.45, 0.35, 1)
 
-	var mesh = SphereMesh.new()
-	mesh.radius = randf_range(0.8, 1.6)
-	mesh.height = mesh.radius * 0.9
-	mesh.radial_segments = 5
-	mesh.rings = 3
 
-	var mi = MeshInstance3D.new()
-	mi.mesh = mesh
-	mi.position = pos + Vector3(0, mesh.height * 0.4, 0)
-	mi.rotation.y = randf_range(0, TAU)
-	mi.set_surface_override_material(0, mat)
-	add_child(mi)
+const PROP_SCALE_VAR = 0.35
+
+func _spawn_prop(path: String, pos: Vector3, base_scale: float = 1.0) -> void:
+	if not ResourceLoader.exists(path):
+		return
+	var inst = load(path).instantiate()
+	inst.position = pos
+	inst.rotation.y = randf_range(0, TAU)
+	var s = base_scale * randf_range(1.0 - PROP_SCALE_VAR, 1.0 + PROP_SCALE_VAR)
+	inst.scale = Vector3(s, s, s)
+	add_child(inst)
+

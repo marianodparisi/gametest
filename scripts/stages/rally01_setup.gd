@@ -72,7 +72,7 @@ func _add_props() -> void:
 		Vector3(95, 4, -30), Vector3(90, 5, 55), Vector3(20, 8, 105),
 	]
 	for pos in tree_spots:
-		_spawn_pine(pos)
+		_spawn_prop("res://assets/props/pine.glb", pos, 1.3)
 
 	# Rocas scattered
 	var rock_spots = [
@@ -80,71 +80,20 @@ func _add_props() -> void:
 		Vector3(72, 6, 75), Vector3(-20, 7.5, 88), Vector3(-42, 8, 65),
 	]
 	for pos in rock_spots:
-		_spawn_rock(pos)
+		_spawn_prop("res://assets/props/rock.glb", pos)
 
 
-func _spawn_pine(pos: Vector3) -> void:
-	var trunk_mat = StandardMaterial3D.new()
-	trunk_mat.albedo_color = Color(0.28, 0.18, 0.1, 1)
-
-	var leaf_mat = StandardMaterial3D.new()
-	leaf_mat.albedo_color = Color(
-		randf_range(0.1, 0.2),
-		randf_range(0.35, 0.5),
-		randf_range(0.1, 0.2),
-		1
-	)
-
-	var root = Node3D.new()
-	root.position = pos
-	root.rotation.y = randf_range(0, TAU)
-	var s = randf_range(0.8, 1.8)
-	root.scale = Vector3(s, s, s)
-
-	var trunk = MeshInstance3D.new()
-	var tm = CylinderMesh.new()
-	tm.top_radius = 0.1
-	tm.bottom_radius = 0.2
-	tm.height = 3.0
-	trunk.mesh = tm
-	trunk.position.y = 1.5
-	trunk.set_surface_override_material(0, trunk_mat)
-
-	# 3 capas de copa para pino más realista
-	for layer in 3:
-		var leaves = MeshInstance3D.new()
-		var lm = CylinderMesh.new()
-		lm.top_radius = 0.0
-		lm.bottom_radius = 1.8 - layer * 0.4
-		lm.height = 2.5
-		lm.radial_segments = 6
-		leaves.mesh = lm
-		leaves.position.y = 3.0 + layer * 1.8
-		leaves.set_surface_override_material(0, leaf_mat)
-		root.add_child(leaves)
-
-	root.add_child(trunk)
-	add_child(root)
 
 
-func _spawn_rock(pos: Vector3) -> void:
-	var mat = StandardMaterial3D.new()
-	mat.albedo_color = Color(
-		randf_range(0.4, 0.55),
-		randf_range(0.38, 0.5),
-		randf_range(0.35, 0.48),
-		1
-	)
+const PROP_SCALE_VAR = 0.35
 
-	var mesh = SphereMesh.new()
-	mesh.radius = randf_range(0.6, 1.4)
-	mesh.height = mesh.radius * randf_range(0.6, 1.0)
-	mesh.radial_segments = 5
-	mesh.rings = 3
+func _spawn_prop(path: String, pos: Vector3, base_scale: float = 1.0) -> void:
+	if not ResourceLoader.exists(path):
+		return
+	var inst = load(path).instantiate()
+	inst.position = pos
+	inst.rotation.y = randf_range(0, TAU)
+	var s = base_scale * randf_range(1.0 - PROP_SCALE_VAR, 1.0 + PROP_SCALE_VAR)
+	inst.scale = Vector3(s, s, s)
+	add_child(inst)
 
-	var mi = MeshInstance3D.new()
-	mi.mesh = mesh
-	mi.position = pos + Vector3(0, mesh.height * 0.5, 0)
-	mi.rotation = Vector3(randf_range(0, 0.3), randf_range(0, TAU), randf_range(0, 0.3))
-	mi.set_surface_override_material(0, mat)
-	add_child(mi)
