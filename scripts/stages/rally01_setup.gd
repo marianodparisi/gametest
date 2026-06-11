@@ -14,11 +14,9 @@ func _build_terrain() -> void:
 	# Terreno de montaña — varias cajas en distintas alturas para dar relieve
 	var rock_mat = StandardMaterial3D.new()
 	rock_mat.albedo_color = Color(0.38, 0.36, 0.32, 1)
-	rock_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 
 	var grass_mat = StandardMaterial3D.new()
 	grass_mat.albedo_color = Color(0.3, 0.42, 0.22, 1)
-	grass_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 
 	# Piso base
 	var base = _make_static_box(Vector3(250, 0.5, 250), grass_mat)
@@ -88,7 +86,6 @@ func _add_props() -> void:
 func _spawn_pine(pos: Vector3) -> void:
 	var trunk_mat = StandardMaterial3D.new()
 	trunk_mat.albedo_color = Color(0.28, 0.18, 0.1, 1)
-	trunk_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 
 	var leaf_mat = StandardMaterial3D.new()
 	leaf_mat.albedo_color = Color(
@@ -97,7 +94,6 @@ func _spawn_pine(pos: Vector3) -> void:
 		randf_range(0.1, 0.2),
 		1
 	)
-	leaf_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 
 	var root = Node3D.new()
 	root.position = pos
@@ -139,7 +135,6 @@ func _spawn_rock(pos: Vector3) -> void:
 		randf_range(0.35, 0.48),
 		1
 	)
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 
 	var mesh = SphereMesh.new()
 	mesh.radius = randf_range(0.6, 1.4)

@@ -16,6 +16,13 @@ sky_material = SubResource("sky_mat")
 [sub_resource type="Environment" id="env"]
 background_mode = 2
 sky = SubResource("sky")
+tonemap_mode = 3
+tonemap_exposure = 1.1
+glow_enabled = true
+glow_intensity = 0.4
+glow_bloom = 0.1
+ssao_enabled = true
+ssao_intensity = 1.5
 ambient_light_source = 3
 ambient_light_color = Color(0.62, 0.6, 0.68, 1)
 ambient_light_energy = 0.45
@@ -37,7 +44,7 @@ shadow_enabled = true
 
 [node name="TrackBuilder" type="Node3D" parent="."]
 script = ExtResource("track_builder")
-road_width = 9.0
+road_width = 10.5
 road_color = Color(0.28, 0.26, 0.22, 1)
 
 [node name="Waypoints" type="Node3D" parent="."]

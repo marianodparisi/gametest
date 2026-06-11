@@ -13,7 +13,6 @@ func _ready() -> void:
 func _build_terrain() -> void:
 	var sand_mat = StandardMaterial3D.new()
 	sand_mat.albedo_color = Color(0.85, 0.72, 0.5, 1)
-	sand_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 
 	var mesh = BoxMesh.new()
 	mesh.size = Vector3(220, 0.3, 220)
@@ -69,7 +68,6 @@ func _spawn_cactus(pos: Vector3) -> void:
 	mat.albedo_color = Color(
 		randf_range(0.2, 0.3), randf_range(0.45, 0.6), randf_range(0.25, 0.35), 1
 	)
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 
 	var root = Node3D.new()
 	root.position = pos
@@ -110,7 +108,6 @@ func _spawn_dune(pos: Vector3, radius: float, height: float) -> void:
 	mat.albedo_color = Color(
 		randf_range(0.8, 0.9), randf_range(0.66, 0.74), randf_range(0.45, 0.55), 1
 	)
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 
 	var mesh = SphereMesh.new()
 	mesh.radius = radius
@@ -128,7 +125,6 @@ func _spawn_dune(pos: Vector3, radius: float, height: float) -> void:
 func _spawn_rock(pos: Vector3) -> void:
 	var mat = StandardMaterial3D.new()
 	mat.albedo_color = Color(0.6, 0.45, 0.35, 1)
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 
 	var mesh = SphereMesh.new()
 	mesh.radius = randf_range(0.8, 1.6)

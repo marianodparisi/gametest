@@ -7,15 +7,16 @@ const CarBodyBuilder = preload("res://scripts/car/car_body_builder.gd")
 @export_group("Motor")
 @export var engine_force: float = 9000.0
 @export var max_speed_kmh: float = 160.0      # Límite suave, no hardcoded
-@export var drag_linear: float = 1.8          # Resistencia del aire
-@export var drag_angular: float = 4.0         # Frena la rotación libre
+@export var drag_linear: float = 0.35         # Resistencia del aire (terminal ~150 km/h)
+@export var drag_angular: float = 2.2         # Frena la rotación libre
 
 @export_group("Frenos")
 @export var brake_force: float = 14000.0
-@export var handbrake_grip: float = 0.4       # Grip trasero durante freno de mano (muy bajo = drift fácil)
+@export var handbrake_grip: float = 0.25      # Grip trasero durante freno de mano (muy bajo = drift fácil)
+@export var handbrake_kick: float = 9000.0    # Torque extra de giro con freno de mano (el "flick" del drift)
 
 @export_group("Dirección")
-@export var max_steer_angle: float = 28.0     # Grados máximos de giro
+@export var max_steer_angle: float = 32.0     # Grados máximos de giro
 @export var steer_speed: float = 6.0          # Qué tan rápido giran las ruedas delanteras
 
 @export_group("Jugador")
@@ -54,7 +55,6 @@ func set_style(style: int) -> void:
 func set_color(color: Color) -> void:
 	var mat = StandardMaterial3D.new()
 	mat.albedo_color = color
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	# Pintar partes marcadas como paintable (builder) o las default de la escena
 	var painted := false
 	for child in $CarMesh.get_children():
@@ -74,6 +74,10 @@ func _apply_grip_to_wheels() -> void:
 	wheel_fr.grip = front_grip
 	wheel_rl.grip = rear_grip
 	wheel_rr.grip = rear_grip
+
+	# Cada rueda soporta un cuarto de la masa (para escalar el grip lateral)
+	for w in [wheel_fl, wheel_fr, wheel_rl, wheel_rr]:
+		w.mass_share = mass / 4.0
 
 	# Durante freno de mano, el grip trasero baja aún más (se aplica en _physics_process)
 	wheel_fl.is_steering = true
@@ -114,7 +118,8 @@ func _update_steering(delta: float) -> void:
 	# Steer se interpola suavemente para evitar giros abruptos
 	_current_steer = lerp(_current_steer, input_steer, steer_speed * delta)
 
-	var steer_rad = deg_to_rad(max_steer_angle * _current_steer)
+	# Negativo: rotation.y positivo gira a la izquierda, steer positivo = derecha
+	var steer_rad = deg_to_rad(max_steer_angle * -_current_steer)
 	wheel_fl.rotation.y = steer_rad
 	wheel_fr.rotation.y = steer_rad
 
@@ -124,6 +129,10 @@ func _apply_forces(delta: float) -> void:
 	var effective_rear_grip = handbrake_grip if input_handbrake else rear_grip
 	wheel_rl.grip = effective_rear_grip
 	wheel_rr.grip = effective_rear_grip
+
+	# Kick de rotación con freno de mano: inicia el drift con un golpe de giro
+	if input_handbrake and linear_velocity.length() > 5.0 and absf(input_steer) > 0.1:
+		apply_torque(Vector3.UP * -input_steer * handbrake_kick)
 
 	var all_wheels = [wheel_fl, wheel_fr, wheel_rl, wheel_rr]
 
@@ -136,10 +145,10 @@ func _apply_forces(delta: float) -> void:
 		var lat = wheel.get_lateral_force(linear_velocity)
 		apply_force(lat, wheel.global_position - global_position)
 
-		# Motor y frenos
-		var throttle_scaled = input_throttle * engine_force
-		var brake_scaled = input_brake * brake_force
-		var longi = wheel.get_longitudinal_force(throttle_scaled, brake_scaled, input_handbrake)
+		# Motor y frenos (la potencia se divide entre las 2 ruedas motrices)
+		var throttle_scaled = input_throttle * engine_force * 0.5
+		var brake_scaled = input_brake * brake_force * 0.25
+		var longi = wheel.get_longitudinal_force(throttle_scaled, brake_scaled, input_handbrake, linear_velocity)
 		apply_force(longi, wheel.global_position - global_position)
 
 

@@ -113,7 +113,6 @@ func _spawn_cars(player_count: int) -> void:
 	if not stage:
 		return
 
-	var grid = stage.get_node_or_null("GridStart")
 	var wp_container = stage.get_node_or_null("Waypoints")
 
 	var wp_list: Array[Node3D] = []
@@ -122,18 +121,44 @@ func _spawn_cars(player_count: int) -> void:
 			if child is Node3D:
 				wp_list.append(child)
 
+	# Grilla calculada SOBRE la pista: detrás del primer waypoint,
+	# mirando hacia el segundo (dirección de carrera)
+	var start_pos = Vector3(0, 0.5, 0)
+	var race_dir = Vector3(0, 0, -1)
+	if wp_list.size() >= 2:
+		start_pos = wp_list[0].global_position
+		race_dir = wp_list[1].global_position - wp_list[0].global_position
+		race_dir.y = 0
+		race_dir = race_dir.normalized()
+	var race_right = race_dir.cross(Vector3.UP).normalized() * -1.0
+	var grid_basis = Basis.looking_at(race_dir, Vector3.UP)
+
+	# Hacia atrás siguiendo la pista: en circuito, hacia el último waypoint
+	var stage_info = GameState.STAGES.filter(
+		func(s): return s["scene"] == GameState.selected_stage
+	)
+	var is_linear_stage = stage_info.size() > 0 and stage_info[0]["type"] == "linear"
+	var back_dir = -race_dir
+	if not is_linear_stage and wp_list.size() >= 3:
+		back_dir = wp_list[wp_list.size() - 1].global_position - wp_list[0].global_position
+		back_dir.y = 0
+		back_dir = back_dir.normalized()
+
 	var total = player_count + GameState.ai_count
 	for i in total:
 		var car = CAR_SCENE.instantiate()
 		vp1.add_child(car)  # Todos los autos viven en VP1's scene tree
 
-		# Grilla de largada: 2 columnas
+		# 2 columnas, filas hacia atrás sobre el asfalto
 		var col = i % 2
 		var row = i / 2
-		var offset = Vector3((col - 0.5) * 2.6, 0.5, row * 4.5)
-		var base_transform = grid.global_transform if grid else Transform3D()
-		car.global_position = base_transform.origin + base_transform.basis * offset
-		car.global_rotation = base_transform.basis.get_euler()
+		car.global_position = (
+			start_pos
+			+ back_dir * (4.0 + row * 6.5)
+			+ race_right * ((col - 0.5) * 3.6)
+			+ Vector3(0, 0.6, 0)
+		)
+		car.global_transform.basis = grid_basis
 
 		var stage_data = GameState.STAGES.filter(
 			func(s): return s["scene"] == GameState.selected_stage

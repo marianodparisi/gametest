@@ -16,7 +16,6 @@ func _build_terrain() -> void:
 	# Piso de hierba grande
 	var grass_mat = StandardMaterial3D.new()
 	grass_mat.albedo_color = Color(0.26, 0.46, 0.2, 1)
-	grass_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 
 	var mesh = BoxMesh.new()
 	mesh.size = Vector3(200, 0.3, 200)
@@ -69,7 +68,6 @@ func _add_props() -> void:
 func _spawn_tree(pos: Vector3) -> void:
 	var trunk_mat = StandardMaterial3D.new()
 	trunk_mat.albedo_color = Color(0.35, 0.22, 0.12, 1)
-	trunk_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 
 	var leaf_mat = StandardMaterial3D.new()
 	# Variación de color para naturalidad
@@ -79,7 +77,6 @@ func _spawn_tree(pos: Vector3) -> void:
 		randf_range(0.1, 0.2),
 		1
 	)
-	leaf_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 
 	var root = Node3D.new()
 	root.position = pos + Vector3(0, 0.0, 0)
@@ -121,7 +118,6 @@ func _spawn_mountain(pos: Vector3, size: Vector3) -> void:
 		randf_range(0.38, 0.52),
 		1
 	)
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 
 	var mesh = CylinderMesh.new()
 	mesh.top_radius = 0.0

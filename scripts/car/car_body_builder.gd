@@ -41,7 +41,6 @@ static func build(car_mesh_root: Node3D, style: int) -> void:
 static func _mat(color: Color) -> StandardMaterial3D:
 	var m = StandardMaterial3D.new()
 	m.albedo_color = color
-	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	return m
 
 
