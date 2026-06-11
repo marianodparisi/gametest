@@ -48,25 +48,61 @@ func _ready() -> void:
 	_apply_grip_to_wheels()
 
 
+# Modelos Blender (.glb). Si falta alguno, cae al builder procedural.
+const CAR_MODELS = [
+	"res://assets/cars/car_0_rally_hatch.glb",
+	"res://assets/cars/car_1_muscle.glb",
+	"res://assets/cars/car_2_buggy.glb",
+	"res://assets/cars/car_3_classic.glb",
+	"res://assets/cars/car_4_van.glb",
+	"res://assets/cars/car_5_wedge.glb",
+]
+
+
 func set_style(style: int) -> void:
-	CarBodyBuilder.build($CarMesh, style)
+	var path = CAR_MODELS[style % CAR_MODELS.size()]
+	var scene = load(path) if ResourceLoader.exists(path) else null
+	if scene == null:
+		CarBodyBuilder.build($CarMesh, style)
+		return
+	for child in $CarMesh.get_children():
+		child.queue_free()
+	var inst = scene.instantiate()
+	$CarMesh.add_child(inst)
 
 
 func set_color(color: Color) -> void:
 	var mat = StandardMaterial3D.new()
 	mat.albedo_color = color
-	# Pintar partes marcadas como paintable (builder) o las default de la escena
-	var painted := false
+	mat.roughness = 0.35
+	mat.metallic = 0.15
+
+	# Modelos glb: pintar superficies cuyo material se llama "Paint"
+	if _paint_by_material_name($CarMesh, mat):
+		return
+
+	# Fallback: partes del builder procedural o de la escena default
 	for child in $CarMesh.get_children():
 		if child.has_meta("paintable"):
 			child.set_surface_override_material(0, mat)
-			painted = true
-	if painted:
-		return
 	for part in ["Body", "Hood", "SpoilerWing"]:
 		var mesh = $CarMesh.get_node_or_null(part)
 		if mesh:
 			mesh.set_surface_override_material(0, mat)
+
+
+func _paint_by_material_name(node: Node, mat: StandardMaterial3D) -> bool:
+	var painted := false
+	if node is MeshInstance3D and node.mesh:
+		for s in node.mesh.get_surface_count():
+			var m = node.mesh.surface_get_material(s)
+			if m and m.resource_name.begins_with("Paint"):
+				node.set_surface_override_material(s, mat)
+				painted = true
+	for child in node.get_children():
+		if _paint_by_material_name(child, mat):
+			painted = true
+	return painted
 
 
 func _apply_grip_to_wheels() -> void:

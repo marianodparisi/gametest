@@ -97,13 +97,16 @@ func _test_car_styles() -> void:
 		car.set_style(style)
 		car.set_color(Color.BLUE)
 
-		# Debe tener al menos una parte pintable
-		var paintable = 0
-		for child in car.get_node("CarMesh").get_children():
-			if child.has_meta("paintable"):
-				paintable += 1
-		_check("car:%s:paintable_parts" % CarBodyBuilder.STYLE_NAMES[style], paintable >= 1,
-			"(%d parts)" % paintable)
+		# Debe poder pintarse: o superficies "Paint" (glb) o partes paintable (builder)
+		var test_mat = StandardMaterial3D.new()
+		test_mat.albedo_color = Color.GREEN
+		var painted = car._paint_by_material_name(car.get_node("CarMesh"), test_mat)
+		if not painted:
+			for child in car.get_node("CarMesh").get_children():
+				if child.has_meta("paintable"):
+					painted = true
+					break
+		_check("car:%s:paintable_parts" % CarBodyBuilder.STYLE_NAMES[style], painted)
 
 		var stats = CarBodyBuilder.STYLE_STATS[style]
 		_check("car:%s:stats_valid" % CarBodyBuilder.STYLE_NAMES[style],
